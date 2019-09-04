@@ -1,29 +1,7 @@
-// @flow
-/**
- * A generic dropdown component.  It takes the children of the component
- * and hosts it in the component.  When the component is selected, it
- * drops-down the contentComponent and applies the contentProps.
- */
 import React, {Component} from 'react';
+import clearIcon from "../fields/DateTimeControl/clear_input.png";
 
-import LoadingIndicator from './loading-indicator.js';
-
-type Props = {
-    children?: Object,
-    contentComponent: Object,
-    contentProps: Object,
-    isLoading?: boolean,
-    disabled?: boolean,
-    shouldToggleOnHover?: boolean
-    labelledBy?: string,
-};
-
-type State = {
-    expanded: boolean,
-    hasFocus: boolean
-};
-
-class Dropdown extends Component<Props, State> {
+class Dropdown extends Component {
     state = {
         expanded: false,
         hasFocus: false,
@@ -39,15 +17,15 @@ class Dropdown extends Component<Props, State> {
         document.removeEventListener('mousedown', this.handleDocumentClick);
     }
 
-    wrapper: ?Object
+    wrapper = {}
 
-    handleDocumentClick = (event: Event) => {
+    handleDocumentClick = (event) => {
         if (this.wrapper && !this.wrapper.contains(event.target)) {
             this.setState({expanded: false});
         }
     }
 
-    handleKeyDown = (e: KeyboardEvent) => {
+    handleKeyDown = (e) => {
         switch (e.which) {
             case 27: // Escape
                 this.toggleExpanded(false);
@@ -67,7 +45,7 @@ class Dropdown extends Component<Props, State> {
         e.preventDefault();
     }
 
-    handleFocus = (e: {target: any}) => {
+    handleFocus = (e) => {
         const {hasFocus} = this.state;
 
         if (e.target === this.wrapper && !hasFocus) {
@@ -75,7 +53,7 @@ class Dropdown extends Component<Props, State> {
         }
     }
 
-    handleBlur = (e: {target: any}) => {
+    handleBlur = (e) => {
         const {hasFocus} = this.state;
 
         if (hasFocus) {
@@ -83,15 +61,15 @@ class Dropdown extends Component<Props, State> {
         }
     }
 
-    handleMouseEnter = (e: {target: any}) => {
+    handleMouseEnter = (e) => {
         this.handleHover(true);
     }
 
-    handleMouseLeave = (e: {target: any}) => {
+    handleMouseLeave = (e) => {
         this.handleHover(false);
     }
 
-    handleHover = (toggleExpanded: boolean) => {
+    handleHover = (toggleExpanded) => {
         const {shouldToggleOnHover} = this.props;
 
         if (shouldToggleOnHover) {
@@ -99,7 +77,7 @@ class Dropdown extends Component<Props, State> {
         }
     }
 
-    toggleExpanded = (value: ?boolean) => {
+    toggleExpanded = (value) => {
         const {isLoading} = this.props;
         const {expanded} = this.state;
 
@@ -127,9 +105,14 @@ class Dropdown extends Component<Props, State> {
         </div>;
     }
 
+    clearSelectedValues = () => {
+        const {onClearSelected} = this.props;
+        if(onClearSelected) onClearSelected();
+    }
+
     render() {
         const {expanded, hasFocus} = this.state;
-        const {children, isLoading, disabled, labelledBy} = this.props;
+        const {children, isLoading, disabled, labelledBy, contentProps: {selected}} = this.props;
 
         const expandedHeaderStyle = expanded
             ? styles.dropdownHeaderExpanded
@@ -183,21 +166,16 @@ class Dropdown extends Component<Props, State> {
                 >
                     {children}
                 </span>
-                <span
-                    className="dropdown-heading-loading-container"
-                    style={styles.loadingContainer}
-                >
-                    {isLoading && <LoadingIndicator />}
-                </span>
-                <span
-                    className="dropdown-heading-dropdown-arrow"
-                    style={styles.dropdownArrow}
-                >
-                    <span style={{
-                        ...arrowStyle,
-                        ...focusedArrowStyle,
-                    }}
-                    />
+            </div>
+            <div>
+               <span
+                   className="dropdown-heading-loading-container"
+                   style={styles.loadingContainer}
+               >
+                    {
+                        selected.length > 0 &&
+                        <img src={clearIcon} id={"date_time_input_img"} onClick={this.clearSelectedValues}/>
+                    }
                 </span>
             </div>
             {expanded && this.renderPanel()}
@@ -253,7 +231,7 @@ const styles = {
         position: 'absolute',
         right: 0,
         top: 0,
-        maxWidth: '100%',
+        maxWidth: '95%',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',

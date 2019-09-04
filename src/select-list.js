@@ -1,27 +1,9 @@
-// @flow
-/**
- * This component represents an unadorned list of SelectItem (s).
- */
 import React, {Component} from 'react';
 
 import SelectItem from './select-item.js';
 
-import type {
-    Option,
-} from './select-item.js';
-
-type Props = {
-    focusIndex: number,
-    ItemRenderer?: Function,
-    options: Array<Option>,
-    selected: Array<Object>,
-    onSelectedChanged: (selected: any) => void,
-    onClick: (event: MouseEvent, index: number) => void,
-    disabled?: boolean
-};
-
-class SelectList extends Component<Props> {
-    handleSelectionChanged = (option: Option, checked: boolean) => {
+class SelectList extends Component {
+    handleSelectionChanged = (option, checked) => {
         const {selected, onSelectedChanged, disabled} = this.props;
 
         if (disabled) {

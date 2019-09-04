@@ -1,9 +1,3 @@
-// @flow
-/**
- * This component represents the entire panel which gets dropped down when the
- * user selects the component.  It encapsulates the search filter, the
- * Select-all item, and the list of options.
- */
 import {filterOptions} from 'fuzzy-match-utils';
 import React, {Component} from 'react';
 
@@ -11,28 +5,7 @@ import SelectItem from './select-item.js';
 import SelectList from './select-list.js';
 import getString from "./get-string.js";
 
-import type {Option} from './select-item.js';
-
-type Props = {
-    ItemRenderer?: Function,
-    options: Array<Option>,
-    selected: Array<any>,
-    selectAllLabel?: string,
-    onSelectedChanged: (selected: Array<any>) => void,
-    disabled?: boolean,
-    disableSearch?: boolean,
-    hasSelectAll: boolean,
-    filterOptions?: (options: Array<Option>, filter: string) => Array<Option>,
-    overrideStrings?: {[string]: string}
-};
-
-type State = {
-    searchHasFocus: boolean,
-    searchText: string,
-    focusIndex: number
-};
-
-class SelectPanel extends Component<Props, State> {
+class SelectPanel extends Component {
     state = {
         searchHasFocus: false,
         searchText: "",
@@ -52,7 +25,7 @@ class SelectPanel extends Component<Props, State> {
         onSelectedChanged([]);
     }
 
-    selectAllChanged = (checked: boolean) => {
+    selectAllChanged = (checked) => {
         if (checked) {
             this.selectAll();
         } else {
@@ -60,14 +33,14 @@ class SelectPanel extends Component<Props, State> {
         }
     }
 
-    handleSearchChange = (e: {target: {value: any}}) => {
+    handleSearchChange = (e) => {
         this.setState({
             searchText: e.target.value,
             focusIndex: -1,
         });
     }
 
-    handleItemClicked = (index: number) => {
+    handleItemClicked = (index) => {
         this.setState({focusIndex: index});
     }
 
@@ -75,7 +48,7 @@ class SelectPanel extends Component<Props, State> {
         this.setState({searchText: ""});
     }
 
-    handleKeyDown = (e: KeyboardEvent) => {
+    handleKeyDown = (e) => {
         switch (e.which) {
             case 38: // Up Arrow
                 if (e.altKey) {
@@ -99,7 +72,7 @@ class SelectPanel extends Component<Props, State> {
         e.preventDefault();
     }
 
-    handleSearchFocus = (searchHasFocus: boolean) => {
+    handleSearchFocus = (searchHasFocus) => {
         this.setState({
             searchHasFocus,
             focusIndex: -1,
@@ -120,7 +93,7 @@ class SelectPanel extends Component<Props, State> {
             filterOptions(options, searchText);
     }
 
-    updateFocus(offset: number) {
+    updateFocus(offset) {
         const {focusIndex} = this.state;
         const {options} = this.props;
 

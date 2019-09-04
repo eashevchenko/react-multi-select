@@ -1,4 +1,3 @@
-// @flow
 const strings = {
     selectSomeItems: "Select some items...",
     allItemsAreSelected: "All items are selected",
@@ -6,7 +5,7 @@ const strings = {
     search: "Search",
 };
 
-function getString(key: string, overrideStrings: ?{[string]: string}): string {
+function getString(key, overrideStrings) {
     if (overrideStrings && overrideStrings[key]) {
         return overrideStrings[key];
     }
